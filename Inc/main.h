@@ -30,6 +30,14 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_hal.h"
 
+#define PA0_High	1
+#define PA1_High	2
+#define PA2_High	4
+#define PA3_High	8
+#define PA4_High 	16
+#define PA5_High 	32
+#define PA6_High 	64
+#define PA7_High 	128
 
 void Error_Handler(void);
 

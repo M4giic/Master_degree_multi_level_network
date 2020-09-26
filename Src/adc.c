@@ -26,10 +26,12 @@
 
 ADC_HandleTypeDef hadc1;
 
+ADC_ChannelConfTypeDef sConfig = {0};
+
 /* ADC1 init function */
 void MX_ADC1_Init(void)
 {
-  ADC_ChannelConfTypeDef sConfig = {0};
+
 
   /** Common config 
   */
@@ -56,6 +58,19 @@ void MX_ADC1_Init(void)
 
 }
 
+uint32_t adc_read_channel(uint32_t channel)
+{
+	sConfig.Channel = channel;
+
+	if(HAL_ADC_ConfigChannel(&hadc1,&sConfig)!=HAL_OK)
+				Error_Handler();
+
+	if(HAL_ADC_Start(&hadc1)!=HAL_OK)
+			Error_Handler();
+
+    return HAL_ADC_GetValue(&hadc1);
+}
+
 void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
 {
 
@@ -79,6 +94,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     PA6     ------> ADC1_IN6
     PA7     ------> ADC1_IN7 
     */
+    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
     GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3 
                           |GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;

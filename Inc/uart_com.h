@@ -17,40 +17,27 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __adc_H
-#define __adc_H
+#ifndef __uart_com_H
+#define __uart_com_H
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "usart.h"
+#include "stdio.h"
 
+#define DEBUG
 
-
-extern ADC_HandleTypeDef hadc1;
-
-extern ADC_ChannelConfTypeDef sConfig;
-
-
-
-void MX_ADC1_Init(void);
-
-uint32_t adc_read_channel(uint32_t channel);
-
+#ifdef DEBUG
+#define PRINTF_DEBUG(...) printf(__VA_ARGS__)
+#else
+#define PRINTF_DEBUG(...) do{}while(0)
+#endif
 
 
 #ifdef __cplusplus
 }
 #endif
 #endif /*__ adc_H */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -19,13 +19,17 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
-#include "adc.h"
-#include "can.h"
-#include "usart.h"
-#include "gpio.h"
+#include "configuration.h"
+
 
 void SystemClock_Config(void);
+
+uint8_t Measure_inputs(void);
+
+uint8_t measured_inputs = 0x00;
+
+
+char* msg = "Program is running\n\r";
 
 
 int main(void)
@@ -40,17 +44,73 @@ int main(void)
   MX_CAN_Init();
   MX_USART1_UART_Init();
 
+  //if(HAL_UART_Transmit(&huart1,(uint8_t*)msg,strlen(msg),HAL_MAX_DELAY)!=HAL_OK)
+	  //Error_Handler();
+
+  PRINTF_DEBUG("Program is running\n\r");
+
+  HAL_ADC_Start(&hadc1);
+
+  PRINTF_DEBUG("Checking state \n\r");
+
   while (1)
   {
+
+	  HAL_Delay(1000);
+
+	  PRINTF_DEBUG("Checking state \n\r");
+
+	  PRINTF_DEBUG("State of channels PA1-PA7 is: %d \n\r",Measure_inputs());;
 
   }
   /* USER CODE END 3 */
 }
 
-/**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+/*
+ * This function will measure inputs on ports PA1-PA7 and save data to measured_inputs
+ *
+ * Information will be saved as binary number 0x00000000 where
+ *
+ * 		0 represent low state
+ * 		1 represent high state
+ *
+ * on respective bit starting from lowest value and lowest peripheral PA1.
+ *
+ */
+
+
+uint8_t Measure_inputs(void)
+{
+	measured_inputs = 0;
+
+	if(adc_read_channel(ADC_CHANNEL_0)>2000)
+		measured_inputs += PA0_High;
+
+	if(adc_read_channel(ADC_CHANNEL_1)>2000)
+		measured_inputs += PA1_High;
+
+	if(adc_read_channel(ADC_CHANNEL_2)>2000)
+		measured_inputs += PA2_High;
+
+	if(adc_read_channel(ADC_CHANNEL_3)>2000)
+		measured_inputs += PA3_High;
+
+	if(adc_read_channel(ADC_CHANNEL_4)>2000)
+		measured_inputs += PA4_High;
+
+	if(adc_read_channel(ADC_CHANNEL_5)>2000)
+		measured_inputs += PA5_High;
+
+	if(adc_read_channel(ADC_CHANNEL_6)>2000)
+		measured_inputs += PA6_High;
+
+	if(adc_read_channel(ADC_CHANNEL_7)>2000)
+		measured_inputs += PA7_High;
+
+	return measured_inputs;
+}
+
+
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -91,6 +151,13 @@ void SystemClock_Config(void)
 
 void Error_Handler(void)
 {
+	while(1)
+	{
+		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,GPIO_PIN_SET);
+			HAL_Delay(100);
+		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,GPIO_PIN_RESET);
+			HAL_Delay(100);
+	}
 
 }
 
